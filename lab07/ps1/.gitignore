@@ -1,0 +1,12 @@
+# compiled output
+/bin/
+*.class
+
+# Eclipse local settings (keep .project and .classpath so the project imports)
+.settings/
+.metadata/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp

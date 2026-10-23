@@ -1,0 +1,95 @@
+/* Copyright (c) 2007-2016 MIT 6.005 course staff, all rights reserved.
+ * Redistribution of original or derived work requires permission of course staff.
+ */
+package twitter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Filter consists of methods that filter a list of tweets for those matching a
+ * condition.
+ * 
+ * DO NOT change the method signatures and specifications of these methods, but
+ * you should implement their method bodies, and you may add new public or
+ * private methods or classes if you like.
+ */
+public class Filter {
+
+    /**
+     * Find tweets written by a particular user.
+     * 
+     * @param tweets   a list of tweets with distinct ids, not modified by this method.
+     * @param username Twitter username, required to be a valid Twitter username as
+     *                 defined by Tweet.getAuthor()'s spec.
+     * @return all and only the tweets in the list whose author is username,
+     *         in the same order as in the input list. Usernames are
+     *         case-insensitive, so "Alyssa" and "alyssa" are the same author.
+     */
+    public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
+        List<Tweet> result = new ArrayList<>();
+        for (Tweet tweet : tweets) {
+            if (tweet.getAuthor().equalsIgnoreCase(username)) {
+                result.add(tweet);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Find tweets that were sent during a particular timespan.
+     * 
+     * @param tweets   a list of tweets with distinct ids, not modified by this method.
+     * @param timespan Timespan
+     * @return all and only the tweets in the list that were sent during the
+     *         timespan, in the same order as in the input list. A tweet sent
+     *         exactly at the start or the end of the timespan is inside it.
+     */
+    public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
+        List<Tweet> result = new ArrayList<>();
+        for (Tweet tweet : tweets) {
+            if (!tweet.getTimestamp().isBefore(timespan.getStart())
+                    && !tweet.getTimestamp().isAfter(timespan.getEnd())) {
+                result.add(tweet);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Find tweets that contain certain words.
+     * 
+     * @param tweets a list of tweets with distinct ids, not modified by this method.
+     * @param words  a list of words to search for in the tweets. A word is a
+     *               nonempty sequence of non-space characters.
+     * @return all and only the tweets in the list such that the tweet text (when
+     *         represented as a sequence of words bounded by space characters
+     *         or the ends of the string) includes at least one of the words
+     *         found in the words list, in the same order as in the input list.
+     *         Matching is case-insensitive, so "Obama" matches "obama".
+     */
+    public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
+        List<Tweet> result = new ArrayList<>();
+        for (Tweet tweet : tweets) {
+            if (containsAnyWord(tweet.getText(), words)) {
+                result.add(tweet);
+            }
+        }
+        return result;
+    }
+
+    /** @return true iff some space-separated word of text equals (ignoring case) one of words */
+    private static boolean containsAnyWord(String text, List<String> words) {
+        for (String textWord : text.split(" ")) {
+            if (textWord.isEmpty()) {
+                continue;
+            }
+            for (String word : words) {
+                if (textWord.equalsIgnoreCase(word)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
